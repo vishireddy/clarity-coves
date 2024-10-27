@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clarity Cove - where peace meets perspective</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Oxanium:wght@200..800&family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+                /* Header Styling */
+                header {
+                    width: 100%;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-family: 'Playwrite GB S';
+            font-size: 2.5em;
+        }
+
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        /* Centered Take Test Button */
+        .centered-button-container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .take-test-button {
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .take-test-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Form Section */
+        .form-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fff;
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .camera-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #2196F3;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>Clarity Cove</header>
+
+    <!-- Centered "Take Test" Button -->
+    <div class="centered-button-container">
+        <a href="#form-section" class="take-test-button">Take Test</a>
+    </div>
+
+    <!-- Form Section -->
+    <div id="form-section" class="form-section">
+        <div class="form-container">
+            <h2>Enter Your Details</h2>
+            <form action="#">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" required>
+                </div>
+                <!-- Camera Capture Button -->
+                <div class="form-group">
+                    <button type="button" class="camera-btn" onclick="capturePhoto()">Capture Photo</button>
+                </div>
+                <button type="submit" class="submit-btn">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Function to capture a photo using the front camera
+        function capturePhoto() {
+            const constraints = {
+                video: { facingMode: "user" }
+            };
+            
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then((stream) => {
+                    const video = document.createElement('video');
+                    video.srcObject = stream;
+                    video.play();
+
+                    // Display the video stream in a popup window
+                    const popup = window.open('', '_blank', 'width=320,height=240');
+                    popup.document.write('<html><head><title>Camera</title></head><body>');
+                    popup.document.body.appendChild(video);
+                    popup.document.write('</body></html>');
+                    
+                    // Take photo on click
+                    video.addEventListener('click', () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        canvas.getContext('2d').drawImage(video, 0, 0);
+
+                        // Stop the video stream
+                        stream.getTracks().forEach(track => track.stop());
+                        
+                        // Display the captured photo in the popup
+                        const dataUrl = canvas.toDataURL('image/png');
+                        popup.document.body.innerHTML = `<img src="${dataUrl}" alt="Captured Photo">`;
+                    });
+                })
+                .catch((error) => {
+                    alert('Unable to access the camera: ' + error.message);
+                });
+        }
+    </script>
+
+</body>
+</html>
